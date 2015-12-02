@@ -22,12 +22,12 @@ public class TeleOp extends OpMode{
     public void loop()
     {
         // Get values from joysticks
-        float rawRight = gamepad1.right_stick_y;
-        float rawLeft = gamepad1.left_stick_y;
+        float rawRight = -gamepad1.right_trigger;
+        float rawLeft = -gamepad1.left_stick_y;
 
         // clip the right/left values so that the values never exceed +/- 1
-        Float right = Range.clip(rawRight, -1, 1);
-        Float left = Range.clip(rawLeft, -1, 1);
+        float right = Range.clip(rawRight, -1, 1);
+        float left = Range.clip(rawLeft, -1, 1);
 
         // scale the joystick value to make it easier to control
         // the robot more precisely at slower speeds.

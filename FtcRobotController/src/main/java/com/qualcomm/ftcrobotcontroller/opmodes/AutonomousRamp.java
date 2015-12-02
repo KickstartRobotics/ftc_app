@@ -3,13 +3,13 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class Autonomous extends OpMode
+public class AutonomousRamp extends OpMode
 
 {
     DcMotor motorRight;
     DcMotor motorLeft;
 
-    public Autonomous()
+    public AutonomousRamp()
 
     {
 
@@ -26,8 +26,8 @@ public class Autonomous extends OpMode
      */
     public void init ()
     {
-        motorRight = hardwareMap.dcMotor.get("motor_2");
-        motorLeft = hardwareMap.dcMotor.get("motor_1");
+        motorRight = hardwareMap.dcMotor.get("motorRight");
+        motorLeft = hardwareMap.dcMotor.get("motorLeft");
         motorLeft.setDirection(DcMotor.Direction.REVERSE);
     }
     /**
