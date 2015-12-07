@@ -93,7 +93,7 @@ public class TeleOpArcade extends OpMode {
 
 		arm = hardwareMap.servo.get("arm");
 
-		armPosition = 0.2;
+		armPosition = 0.5;
 	}
 
 	/*
@@ -136,7 +136,6 @@ public class TeleOpArcade extends OpMode {
 			// the arm servo.
 			arm.setPosition(1);
 		}
-
 		if (gamepad1.y)
 		{
 			// if the Y button is pushed on gamepad1, decrease the position of
@@ -163,10 +162,7 @@ public class TeleOpArcade extends OpMode {
 		 * will return a null value. The legacy NXT-compatible motor controllers
 		 * are currently write only.
 		 */
-        telemetry.addData("Text", "*** Robot Data***");
-		telemetry.addData("arm", "arm:  " + String.format("%.2f", armPosition));
-        telemetry.addData("left tgt pwr",  "left  pwr: " + String.format("%.2f", left));
-        telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", right));
+
 
 	}
 

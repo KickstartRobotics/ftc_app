@@ -58,7 +58,7 @@ public class AutonomousParkZone extends OpMode
                 long time = 0;
                 long originalTime = System.currentTimeMillis();
 
-                while(time < 3600)
+                while(time < 3250)
                 {
                     time = System.currentTimeMillis() - originalTime;
                 }

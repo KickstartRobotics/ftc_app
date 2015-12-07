@@ -12,18 +12,24 @@ public class TeleOp extends OpMode{
 
     DcMotor motorRight;
     DcMotor motorLeft;
+    Servo arm;
+    Servo rightFlipper;
+    Servo leftFlipper;
 
     public void init()
     {
         motorRight = hardwareMap.dcMotor.get("motorRight");
         motorLeft = hardwareMap.dcMotor.get("motorLeft");
+        arm = hardwareMap.servo.get("arm");
+        leftFlipper = hardwareMap.servo.get("leftFlipper");
+        rightFlipper = hardwareMap.servo.get("rightFlipper");
     }
 
     public void loop()
     {
         // Get values from joysticks
-        float rawRight = -gamepad1.right_trigger;
-        float rawLeft = -gamepad1.left_stick_y;
+        float rawLeft = -gamepad1.right_stick_y;
+        float rawRight = gamepad1.left_stick_y;
 
         // clip the right/left values so that the values never exceed +/- 1
         float right = Range.clip(rawRight, -1, 1);
@@ -34,9 +40,45 @@ public class TeleOp extends OpMode{
         right = (float) scaleInput(right);
         left = (float) scaleInput(left);
 
+        if (gamepad1.a)
+        {
+            // if the A button is pushed on gamepad1, increment the position of
+            // the arm servo.
+            arm.setPosition(1);
+        }
+        else if (gamepad1.b)
+        {
+            // if the Y button is pushed on gamepad1, decrease the position of
+            // the arm servo.
+            arm.setPosition(0);
+        }
+        else
+        {
+            // if the Y button is pushed on gamepad1, decrease the position of
+            // the arm servo.
+            arm.setPosition(.5);
+        }
+
+        if (gamepad1.x)
+        {
+            leftFlipper.setPosition(1);
+            rightFlipper.setPosition(1);
+        }
+        else if (gamepad1.y)
+        {
+            leftFlipper.setPosition(0);
+            rightFlipper.setPosition(0);
+        }
+        else
+        {
+            leftFlipper.setPosition(.5);
+            rightFlipper.setPosition(.5);
+        }
+
         // write the values to the motors
         motorRight.setPower(right);
         motorLeft.setPower(left);
+
     }
 
 
