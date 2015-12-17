@@ -10,6 +10,11 @@ import com.qualcomm.robotcore.util.Range;
  */
 public class TeleOp extends OpMode{
 
+    private boolean rightArmOut = false;
+    private boolean rbPressed = false;
+    private boolean leftArmOut = false;
+    private boolean lbPressed = false;
+
     DcMotor motorRight;
     DcMotor motorLeft;
     Servo arm;
@@ -23,6 +28,12 @@ public class TeleOp extends OpMode{
         arm = hardwareMap.servo.get("arm");
         leftFlipper = hardwareMap.servo.get("leftFlipper");
         rightFlipper = hardwareMap.servo.get("rightFlipper");
+
+
+        arm.setPosition(.5);
+        leftFlipper.setPosition(1);
+        rightFlipper.setPosition(0);
+
     }
 
     public void loop()
@@ -40,6 +51,20 @@ public class TeleOp extends OpMode{
         right = (float) scaleInput(right);
         left = (float) scaleInput(left);
 
+        // write the values to the motors
+        motorRight.setPower(right);
+        motorLeft.setPower(left);
+
+        climberArm();
+        rightArm();
+        leftArm();
+
+    }
+
+    private void climberArm()
+    {
+        //Arm code
+
         if (gamepad1.a)
         {
             // if the A button is pushed on gamepad1, increment the position of
@@ -54,38 +79,92 @@ public class TeleOp extends OpMode{
         }
         else
         {
-            // if the Y button is pushed on gamepad1, decrease the position of
-            // the arm servo.
             arm.setPosition(.5);
         }
+    }
 
-        if (gamepad1.x)
+    private void leftArm()
+    {
+        //Toggled flipper code
+        if (gamepad1.left_bumper)
         {
-            leftFlipper.setPosition(1);
-            rightFlipper.setPosition(1);
+            if (!lbPressed)
+            {
+                if (leftArmOut)
+                {
+                    leftFlipper.setPosition(.6);
+                    leftArmOut = false;
+                }
+
+                else
+                {
+                    leftFlipper.setPosition(0);
+                    leftArmOut = true;
+                }
+            }
+
+            lbPressed = true;
+
+        } else {
+            lbPressed = false;
         }
-        else if (gamepad1.y)
+    }
+
+    private void rightArm()
+    {
+        //Toggled flipper code
+        if (gamepad1.right_bumper)
+        {
+            if (!rbPressed)
+            {
+                if (rightArmOut)
+                {
+                    rightFlipper.setPosition(1);
+                    rightArmOut = false;
+                }
+                else
+                {
+                    rightFlipper.setPosition(.5);
+                    rightArmOut = true;
+                }
+            }
+
+            rbPressed = true;
+
+        }
+
+        else
+        {
+            rbPressed = false;
+        }
+
+        /*
+        //Non trigger flipper code
+        if (gamepad1.left_bumper)
         {
             leftFlipper.setPosition(0);
-            rightFlipper.setPosition(0);
         }
         else
         {
-            leftFlipper.setPosition(.5);
-            rightFlipper.setPosition(.5);
+            leftFlipper.setPosition(1);
         }
 
-        // write the values to the motors
-        motorRight.setPower(right);
-        motorLeft.setPower(left);
+        if (gamepad1.right_bumper)
+        {
+            leftFlipper.setPosition(0);
+        }
+
+        else
+        {
+            leftFlipper.setPosition(1);
+        }
+        */
 
     }
-
 
     public void stop() {
 
     }
-
 
     /*
      * This method scales the joystick input so for low joystick values, the
