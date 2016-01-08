@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.util.Range;
  */
 public class TeleOp extends OpMode{
 
+    private final double ARM_POWER = .25;
+
     private boolean rightArmOut = false;
     private boolean rbPressed = false;
     private boolean leftArmOut = false;
@@ -17,7 +19,7 @@ public class TeleOp extends OpMode{
 
     DcMotor motorRight;
     DcMotor motorLeft;
-    Servo arm;
+    DcMotor motorArm;
     Servo rightFlipper;
     Servo leftFlipper;
 
@@ -25,12 +27,11 @@ public class TeleOp extends OpMode{
     {
         motorRight = hardwareMap.dcMotor.get("motorRight");
         motorLeft = hardwareMap.dcMotor.get("motorLeft");
-        arm = hardwareMap.servo.get("arm");
+        motorArm = hardwareMap.dcMotor.get("motorArm");
         leftFlipper = hardwareMap.servo.get("leftFlipper");
         rightFlipper = hardwareMap.servo.get("rightFlipper");
 
 
-        arm.setPosition(.5);
         leftFlipper.setPosition(1);
         rightFlipper.setPosition(0);
 
@@ -65,28 +66,30 @@ public class TeleOp extends OpMode{
     {
         //Arm code
 
-        if (gamepad1.a)
+        if (gamepad2.a)
         {
             // if the A button is pushed on gamepad1, increment the position of
             // the arm servo.
-            arm.setPosition(1);
+            motorArm.setDirection(DcMotor.Direction.FORWARD);
+            motorArm.setPower(ARM_POWER);
         }
-        else if (gamepad1.b)
+        else if (gamepad2.b)
         {
             // if the Y button is pushed on gamepad1, decrease the position of
             // the arm servo.
-            arm.setPosition(0);
+            motorArm.setDirection(DcMotor.Direction.REVERSE);
+            motorArm.setPower(ARM_POWER);
         }
         else
         {
-            arm.setPosition(.5);
+            motorArm.setPower(0);
         }
     }
 
     private void leftArm()
     {
         //Toggled flipper code
-        if (gamepad1.left_bumper)
+        if (gamepad2.left_bumper)
         {
             if (!lbPressed)
             {
@@ -113,7 +116,7 @@ public class TeleOp extends OpMode{
     private void rightArm()
     {
         //Toggled flipper code
-        if (gamepad1.right_bumper)
+        if (gamepad2.right_bumper)
         {
             if (!rbPressed)
             {
