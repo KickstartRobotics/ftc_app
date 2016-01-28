@@ -10,7 +10,8 @@ import com.qualcomm.robotcore.util.Range;
  */
 public class TeleOp extends OpMode{
 
-    private final double ARM_POWER = .25;
+    //private final double ARM_POWER = .25;
+    private final double LIFT_POWER = .2;
 
     private boolean rightArmOut = false;
     private boolean rbPressed = false;
@@ -20,6 +21,7 @@ public class TeleOp extends OpMode{
     DcMotor motorRight;
     DcMotor motorLeft;
     DcMotor motorArm;
+    DcMotor rampLift;
     Servo rightFlipper;
     Servo leftFlipper;
 
@@ -28,12 +30,14 @@ public class TeleOp extends OpMode{
         motorRight = hardwareMap.dcMotor.get("motorRight");
         motorLeft = hardwareMap.dcMotor.get("motorLeft");
         motorArm = hardwareMap.dcMotor.get("motorArm");
+        rampLift = hardwareMap.dcMotor.get("rampLift");
         leftFlipper = hardwareMap.servo.get("leftFlipper");
         rightFlipper = hardwareMap.servo.get("rightFlipper");
 
 
-        leftFlipper.setPosition(1);
-        rightFlipper.setPosition(0);
+
+        leftFlipper.setPosition(.2);
+        rightFlipper.setPosition(.4);
 
     }
 
@@ -59,31 +63,54 @@ public class TeleOp extends OpMode{
         climberArm();
         rightArm();
         leftArm();
+        backLift();
+    }
+
+    public void backLift()
+    {
+        if (gamepad1.y)
+        {
+            rampLift.setDirection(DcMotor.Direction.FORWARD);
+            rampLift.setPower(LIFT_POWER);
+        }
+        else if (gamepad1.x)
+        {
+            rampLift.setDirection(DcMotor.Direction.REVERSE);
+            rampLift.setPower(LIFT_POWER);
+        }
+        else
+        {
+            rampLift.setPower(0);
+        }
 
     }
 
     private void climberArm()
     {
-        //Arm code
 
-        if (gamepad2.a)
-        {
-            // if the A button is pushed on gamepad1, increment the position of
-            // the arm servo.
-            motorArm.setDirection(DcMotor.Direction.FORWARD);
-            motorArm.setPower(ARM_POWER);
-        }
-        else if (gamepad2.b)
-        {
-            // if the Y button is pushed on gamepad1, decrease the position of
-            // the arm servo.
-            motorArm.setDirection(DcMotor.Direction.REVERSE);
-            motorArm.setPower(ARM_POWER);
-        }
-        else
-        {
-            motorArm.setPower(0);
-        }
+            // Get values from joystick
+            float rawLift = -gamepad2.right_stick_y;
+
+            // clip the right/left value so that the value never exceeds +/- 1
+            double lift;
+
+            if(rawLift > .15) {
+                lift = .15;
+            }
+            else if(rawLift < -.15) {
+                lift = -.15;
+            }
+            else {
+                lift = rawLift;
+            }
+
+            // scale the joystick value to make it easier to control
+            // the robot more precisely at slower speeds.
+            //lift = (float) scaleInput(lift);
+
+            //motorArm.setDirection(DcMotor.Direction.FORWARD);
+
+            motorArm.setPower(lift);
     }
 
     private void leftArm()
@@ -95,13 +122,13 @@ public class TeleOp extends OpMode{
             {
                 if (leftArmOut)
                 {
-                    leftFlipper.setPosition(.6);
+                    leftFlipper.setPosition(1);
                     leftArmOut = false;
                 }
 
                 else
                 {
-                    leftFlipper.setPosition(0);
+                    leftFlipper.setPosition(.6);
                     leftArmOut = true;
                 }
             }
@@ -122,12 +149,12 @@ public class TeleOp extends OpMode{
             {
                 if (rightArmOut)
                 {
-                    rightFlipper.setPosition(1);
+                    rightFlipper.setPosition(.4);
                     rightArmOut = false;
                 }
                 else
                 {
-                    rightFlipper.setPosition(.5);
+                    rightFlipper.setPosition(0);
                     rightArmOut = true;
                 }
             }

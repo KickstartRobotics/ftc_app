@@ -3,13 +3,13 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class AutonomousParkZone extends OpMode
+public class AutonomousWithEncoders extends OpMode
 
 {
     DcMotor motorRight;
     DcMotor motorLeft;
 
-    public AutonomousParkZone()
+    public AutonomousWithEncoders()
 
     {
 
@@ -45,16 +45,16 @@ public class AutonomousParkZone extends OpMode
         //
         switch (v_state)
         {
-        //
-        // Synchronize the state machine and hardware.
-        //
-        case 0:
+            //
+            // Synchronize the state machine and hardware.
+            //
+            case 0:
                 motorLeft.setPower(-0.5);
                 motorRight.setPower(-0.5);
 
                 v_state++;
-            break;
-        case 1:
+                break;
+            case 1:
                 long time = 0;
                 long originalTime = System.currentTimeMillis();
 
@@ -63,15 +63,15 @@ public class AutonomousParkZone extends OpMode
                     time = System.currentTimeMillis() - originalTime;
                 }
                 v_state++;
-            break;
-        //
-        // Perform no action - stay in this case until the OpMode is stopped.
-        // This method will still be called regardless of the state machine.
-        //
-        default:
+                break;
+            //
+            // Perform no action - stay in this case until the OpMode is stopped.
+            // This method will still be called regardless of the state machine.
+            //
+            default:
                 motorLeft.setPower(0);
                 motorRight.setPower(0);
-            break;
+                break;
         }
 
         motorLeft.setDirection(DcMotor.Direction.REVERSE);

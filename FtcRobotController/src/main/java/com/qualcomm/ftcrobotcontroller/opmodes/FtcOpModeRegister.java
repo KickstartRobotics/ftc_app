@@ -66,7 +66,9 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("AutonomousParkZone", AutonomousParkZone.class);
     manager.register("TeleOp Arcade",TeleOpArcade.class);
     manager.register("Autonomous Low Ramp", AutonomousLowRamp.class);
-
+    manager.register("DebugRGB", HTRGBExample.class);
+    manager.register("Auton Drive", ClimberDropAuton.class);
+    manager.register("AutonomousWithEncoders", AutonomousWithEncoders.class);
     /*
      * Uncomment any of the following lines if you want to register an op mode.
      */
