@@ -27,17 +27,17 @@ public class TeleOp extends OpMode{
 
     public void init()
     {
-        motorRight = hardwareMap.dcMotor.get("motorRight");
-        motorLeft = hardwareMap.dcMotor.get("motorLeft");
-        motorArm = hardwareMap.dcMotor.get("motorArm");
-        rampLift = hardwareMap.dcMotor.get("rampLift");
-        leftFlipper = hardwareMap.servo.get("leftFlipper");
-        rightFlipper = hardwareMap.servo.get("rightFlipper");
+        motorRight = hardwareMap.dcMotor.get( "motorRight" );
+        motorLeft = hardwareMap.dcMotor.get( "motorLeft" );
+        motorArm = hardwareMap.dcMotor.get( "motorArm" );
+        rampLift = hardwareMap.dcMotor.get( "rampLift" );
+        leftFlipper = hardwareMap.servo.get( "leftFlipper" );
+        rightFlipper = hardwareMap.servo.get( "rightFlipper" );
 
 
 
-        leftFlipper.setPosition(.2);
-        rightFlipper.setPosition(.4);
+        leftFlipper.setPosition( .2 );
+        rightFlipper.setPosition( .4 );
 
     }
 
@@ -48,17 +48,17 @@ public class TeleOp extends OpMode{
         float rawRight = gamepad1.left_stick_y;
 
         // clip the right/left values so that the values never exceed +/- 1
-        float right = Range.clip(rawRight, -1, 1);
-        float left = Range.clip(rawLeft, -1, 1);
+        float right = Range.clip( rawRight, -1, 1 );
+        float left = Range.clip( rawLeft, -1, 1 );
 
         // scale the joystick value to make it easier to control
         // the robot more precisely at slower speeds.
-        right = (float) scaleInput(right);
-        left = (float) scaleInput(left);
+        right = ( float ) scaleInput( right );
+        left = ( float ) scaleInput( left );
 
         // write the values to the motors
-        motorRight.setPower(right);
-        motorLeft.setPower(left);
+        motorRight.setPower( right );
+        motorLeft.setPower( left );
 
         climberArm();
         rightArm();
@@ -68,15 +68,15 @@ public class TeleOp extends OpMode{
 
     public void backLift()
     {
-        if (gamepad1.y)
+        if ( gamepad1.y )
         {
-            rampLift.setDirection(DcMotor.Direction.FORWARD);
-            rampLift.setPower(LIFT_POWER);
+            rampLift.setDirection( DcMotor.Direction.FORWARD );
+            rampLift.setPower( LIFT_POWER );
         }
         else if (gamepad1.x)
         {
-            rampLift.setDirection(DcMotor.Direction.REVERSE);
-            rampLift.setPower(LIFT_POWER);
+            rampLift.setDirection( DcMotor.Direction.REVERSE );
+            rampLift.setPower( LIFT_POWER );
         }
         else
         {
@@ -94,48 +94,44 @@ public class TeleOp extends OpMode{
             // clip the right/left value so that the value never exceeds +/- 1
             double lift;
 
-            if(rawLift > .15) {
+            if( rawLift > .15 )
+            {
                 lift = .15;
             }
-            else if(rawLift < -.15) {
+            else if( rawLift < -.15 )
+            {
                 lift = -.15;
             }
-            else {
+            else
+            {
                 lift = rawLift;
             }
 
-            // scale the joystick value to make it easier to control
-            // the robot more precisely at slower speeds.
-            //lift = (float) scaleInput(lift);
-
-            //motorArm.setDirection(DcMotor.Direction.FORWARD);
-
-            motorArm.setPower(lift);
+            motorArm.setPower( lift );
     }
 
     private void leftArm()
     {
-        //Toggled flipper code
-        if (gamepad2.left_bumper)
+        if ( gamepad2.left_bumper )
         {
-            if (!lbPressed)
+            if ( !lbPressed )
             {
-                if (leftArmOut)
+                if ( leftArmOut )
                 {
-                    leftFlipper.setPosition(1);
+                    leftFlipper.setPosition( 1 );
                     leftArmOut = false;
                 }
 
                 else
                 {
-                    leftFlipper.setPosition(.6);
+                    leftFlipper.setPosition( .6 );
                     leftArmOut = true;
                 }
             }
-
             lbPressed = true;
-
-        } else {
+        }
+        else
+        {
             lbPressed = false;
         }
     }
@@ -143,86 +139,63 @@ public class TeleOp extends OpMode{
     private void rightArm()
     {
         //Toggled flipper code
-        if (gamepad2.right_bumper)
+        if ( gamepad2.right_bumper )
         {
-            if (!rbPressed)
+            if ( !rbPressed )
             {
-                if (rightArmOut)
+                if ( rightArmOut )
                 {
-                    rightFlipper.setPosition(.4);
+                    rightFlipper.setPosition( .4 );
                     rightArmOut = false;
                 }
                 else
                 {
-                    rightFlipper.setPosition(0);
+                    rightFlipper.setPosition( 0 );
                     rightArmOut = true;
                 }
             }
-
             rbPressed = true;
-
         }
 
         else
         {
             rbPressed = false;
         }
+    }
 
-        /*
-        //Non trigger flipper code
-        if (gamepad1.left_bumper)
-        {
-            leftFlipper.setPosition(0);
-        }
-        else
-        {
-            leftFlipper.setPosition(1);
-        }
-
-        if (gamepad1.right_bumper)
-        {
-            leftFlipper.setPosition(0);
-        }
-
-        else
-        {
-            leftFlipper.setPosition(1);
-        }
-        */
+    public void stop()
+    {
 
     }
 
-    public void stop() {
-
-    }
-
-    /*
-     * This method scales the joystick input so for low joystick values, the
-     * scaled value is less than linear.  This is to make it easier to drive
-     * the robot more precisely at slower speeds.
-     */
-    double scaleInput(double dVal)  {
+    double scaleInput( double dVal )
+    {
         double[] scaleArray = { 0.0, 0.05, 0.09, 0.10, 0.12, 0.15, 0.18, 0.24,
                 0.30, 0.36, 0.43, 0.50, 0.60, 0.72, 0.85, 1.00, 1.00 };
 
         // get the corresponding index for the scaleInput array.
-        int index = (int) (dVal * 16.0);
+        int index = ( int ) ( dVal * 16.0 );
 
         // index should be positive.
-        if (index < 0) {
+        if ( index < 0 )
+        {
             index = -index;
         }
 
         // index cannot exceed size of array minus 1.
-        if (index > 16) {
+        if ( index > 16 )
+        {
             index = 16;
         }
 
         // get value from the array.
         double dScale = 0.0;
-        if (dVal < 0) {
+        if ( dVal < 0 )
+        {
             dScale = -scaleArray[index];
-        } else {
+        }
+        else
+        {
             dScale = scaleArray[index];
         }
 
