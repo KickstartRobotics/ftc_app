@@ -12,32 +12,30 @@ public class TeleOp extends OpMode{
 
     //private final double ARM_POWER = .25;
     private final double LIFT_POWER = .2;
+    private final double SCOOPER_POWER = .2;
 
     private boolean rightArmOut = false;
     private boolean rbPressed = false;
-    private boolean leftArmOut = false;
+    private boolean bucketOpen = false;
     private boolean lbPressed = false;
 
     DcMotor motorRight;
     DcMotor motorLeft;
-    DcMotor motorArm;
-    DcMotor rampLift;
-    Servo rightFlipper;
-    Servo leftFlipper;
+    DcMotor motorScooper;
+    DcMotor motorBucketLift;
+    Servo bucketFlipper;
 
     public void init()
     {
+        motorBucketLift = hardwareMap.dcMotor.get( "motorBucketLift" );
         motorRight = hardwareMap.dcMotor.get( "motorRight" );
         motorLeft = hardwareMap.dcMotor.get( "motorLeft" );
-        motorArm = hardwareMap.dcMotor.get( "motorArm" );
-        rampLift = hardwareMap.dcMotor.get( "rampLift" );
-        leftFlipper = hardwareMap.servo.get( "leftFlipper" );
-        rightFlipper = hardwareMap.servo.get( "rightFlipper" );
+        motorScooper = hardwareMap.dcMotor.get( "motorScooper" );
+        bucketFlipper = hardwareMap.servo.get( "bucketFlipper" );
 
 
 
-        leftFlipper.setPosition( .2 );
-        rightFlipper.setPosition( .4 );
+        bucketFlipper.setPosition( .2 );
 
     }
 
@@ -60,107 +58,62 @@ public class TeleOp extends OpMode{
         motorRight.setPower( right );
         motorLeft.setPower( left );
 
-        climberArm();
-        rightArm();
-        leftArm();
-        backLift();
+        bucketLift();
+        scoopDebris();
+        bucketDump();
     }
 
-    public void backLift()
+    public void bucketLift()
     {
-        if ( gamepad1.y )
+        if (gamepad1.dpad_up)
         {
-            rampLift.setDirection( DcMotor.Direction.FORWARD );
-            rampLift.setPower( LIFT_POWER );
+            motorBucketLift.setDirection(DcMotor.Direction.FORWARD);
+            motorBucketLift.setPower(LIFT_POWER);
         }
-        else if (gamepad1.x)
+        else if (gamepad1.dpad_down)
         {
-            rampLift.setDirection( DcMotor.Direction.REVERSE );
-            rampLift.setPower( LIFT_POWER );
+            motorBucketLift.setDirection(DcMotor.Direction.REVERSE);
+            motorBucketLift.setPower(LIFT_POWER);
         }
         else
         {
-            rampLift.setPower(0);
-        }
-
-    }
-
-    private void climberArm()
-    {
-
-            // Get values from joystick
-            float rawLift = -gamepad2.right_stick_y;
-
-            // clip the right/left value so that the value never exceeds +/- 1
-            double lift;
-
-            if( rawLift > .15 )
-            {
-                lift = .15;
-            }
-            else if( rawLift < -.15 )
-            {
-                lift = -.15;
-            }
-            else
-            {
-                lift = rawLift;
-            }
-
-            motorArm.setPower( lift );
-    }
-
-    private void leftArm()
-    {
-        if ( gamepad2.left_bumper )
-        {
-            if ( !lbPressed )
-            {
-                if ( leftArmOut )
-                {
-                    leftFlipper.setPosition( 1 );
-                    leftArmOut = false;
-                }
-
-                else
-                {
-                    leftFlipper.setPosition( .6 );
-                    leftArmOut = true;
-                }
-            }
-            lbPressed = true;
-        }
-        else
-        {
-            lbPressed = false;
+            motorBucketLift.setPower(0);
         }
     }
 
-    private void rightArm()
+    public void bucketDump()
     {
-        //Toggled flipper code
-        if ( gamepad2.right_bumper )
+        if (gamepad1.right_bumper)
         {
-            if ( !rbPressed )
+            if(!rbPressed)
             {
-                if ( rightArmOut )
+                if (bucketOpen)
                 {
-                    rightFlipper.setPosition( .4 );
-                    rightArmOut = false;
+                    bucketFlipper.setPosition(.6);
+                    bucketOpen = false;
                 }
                 else
                 {
-                    rightFlipper.setPosition( 0 );
-                    rightArmOut = true;
+                    bucketFlipper.setPosition(0);
+                    bucketOpen = true;
                 }
             }
             rbPressed = true;
         }
-
         else
         {
             rbPressed = false;
         }
+    }
+
+    public void scoopDebris()
+    {
+        if ( gamepad1.a )
+        {
+            motorScooper.setDirection( DcMotor.Direction.FORWARD );
+            motorScooper.setPower( SCOOPER_POWER );
+        }
+
     }
 
     public void stop()
